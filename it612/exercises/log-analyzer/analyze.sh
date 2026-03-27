@@ -15,17 +15,16 @@ echo ""
 # Use grep and wc to count lines by log level.
 # ─────────────────────────────────────────────
 echo "--- Line Counts ---"
-
+ 
 # TODO: Count total lines in the log file
 # echo "Total lines: $( ... )"
-
+#wasn't working for some reason
+#echo "Total lines: $( wc -l )"
 # TODO: Count lines containing ERROR
-# echo "Error lines: $( ... )"
+echo "Error lines: $( grep "ERROR" server.log | wc -l )"
 
 # TODO: Count lines containing WARN
-# echo "Warning lines: $( ... )"
-
-echo ""
+echo "Warning lines: $( grep "WARN" server.log | wc -l )"
 
 # ─────────────────────────────────────────────
 # Step 2: Extract Unique Errors
@@ -35,10 +34,11 @@ echo ""
 echo "--- Unique Error Messages ---"
 
 # TODO: grep ERROR lines, extract the message part, sort, remove duplicates
-# grep ... | awk ... | sort | uniq
+
+
+grep "ERROR" server.log | awk '{for(i=4;i<=NF;i++) printf "%s ", $i; print ""}' | sort | uniq
 
 echo ""
-
 # ─────────────────────────────────────────────
 # Step 3: Most Requested Endpoints
 # Find GET/POST requests, count unique
@@ -47,7 +47,7 @@ echo ""
 echo "--- Top Endpoints ---"
 
 # TODO: grep for GET or POST, extract method and path, count and rank
-# grep ... | awk ... | sort | uniq -c | sort -rn
+echo "$(grep "GET|POST" | awk '{for(i=6;i<=NF;i++) printf "%s ", $i; print ""}' | sort | uniq -c | sort -rn)"
 
 echo ""
 
@@ -58,7 +58,7 @@ echo ""
 echo "--- User Logins ---"
 
 # TODO: grep for session lines, extract usernames, count and rank
-# grep ... | grep -o ... | sort | uniq -c | sort -rn
+echo "$(grep "session created for user=" | grep -o 'user=[a-z]*' | sort | uniq -c | sort -rn)"
 
 echo ""
 
@@ -68,4 +68,5 @@ echo ""
 # ─────────────────────────────────────────────
 
 # TODO: Print a line showing when this report was generated
-# echo "Report generated: $( ... )"
+
+echo "Report generated: $(date)"
