@@ -274,27 +274,35 @@ You don't need to commit anything in this folder unless the instructor says othe
 <details>
 <summary>Puzzle 1 hint</summary>
 
-`Import-Csv` returns an array of objects, each with named fields matching the CSV header. `Where-Object { $_.Field -eq 'value' }` filters them. Strings compare lexically — `'2026-04-28T03:00:00Z' -ge '2026-04-28T00:00:00Z'` works correctly because ISO-8601 timestamps are sortable as strings.
+Start by printing the CSV headers and one or two matching-looking rows so you know the field names. Then build the filter one condition at a time: event type first, role transition second, timestamp window last.
+
+ISO-8601 timestamps sort in chronological order as strings, which makes the time-window comparison simpler than it looks.
 
 </details>
 
 <details>
 <summary>Puzzle 2 hint</summary>
 
-The shape of the answer is "the unique IP whose set of touched target ports is `{22, 80, 443, 3389}`". One way is to extract `(src, port)` pairs, filter to those four ports, dedupe, then count rows per `src` — the IP with count `4` is your answer.
+Break the log line into the two pieces that matter: `src=...` and `port=...`. Your intermediate output should look like a short list of source/port pairs.
+
+After that, the important distinction is **unique ports per source**, not total number of connection attempts.
 
 </details>
 
 <details>
 <summary>Puzzle 3 hint</summary>
 
-If you build a per-door action string by concatenating `D` for `DENIED` and `G` for `GRANTED` as you scan the log top-to-bottom, the answer is "the door whose string contains `DDDG` as a substring."
+Use the door ID as the key in an awk associative array. For each line, update that door's running history based on whether the action was denied or granted.
+
+At the end, inspect the per-door histories for the four-event pattern described in the puzzle.
 
 </details>
 
 <details>
 <summary>Puzzle 4 hint</summary>
 
-`wave_size` is a **top-level** field of the returned table — not nested inside `waves`, not inside `game`. After `local cfg = dofile(...)`, you want `cfg.wave_size`.
+The config file is executable Lua that returns a table. Load it with `dofile(...)`, store the returned table in a variable, and inspect its fields from the Lua interpreter.
+
+Be careful not to confuse the overall setting with values nested inside one individual wave.
 
 </details>
